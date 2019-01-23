@@ -68,6 +68,7 @@ describe('todos', () => {
 
   describe('create', () => {
     it('should create a new file for each todo', (done) => {
+      
       todos.create('todo1', (err, data) => {
         const todoCount = fs.readdirSync(todos.dataDir).length;
         expect(todoCount).to.equal(1);
@@ -133,7 +134,7 @@ describe('todos', () => {
 
   });
 
-  describe('readOne', () => {
+  xdescribe('readOne', () => {
     it('should return an error for non-existant todo', (done) => {
       todos.readOne('notAnId', (err, todo) => {
         expect(err).to.exist;
@@ -153,7 +154,7 @@ describe('todos', () => {
     });
   });
 
-  describe('update', () => {
+  xdescribe('update', () => {
     beforeEach((done) => {
       todos.create('original todo', done);
     });
@@ -187,7 +188,7 @@ describe('todos', () => {
     });
   });
 
-  describe('delete', () => {
+  xdescribe('delete', () => {
     beforeEach((done) => {
       todos.create('delete this todo', done);
     });
