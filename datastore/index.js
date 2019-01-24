@@ -11,13 +11,13 @@ exports.create = (text, callback) => {
   var id;
   counter.getNextUniqueId((err, data) => {
     if (err) {
-      throw err;
+      callback(new Error(`No item with id: ${id}`));
     }
     id = data;
     items[id] = text;
     fs.appendFile(`${exports.dataDir}/${id}.txt`, text.toString(), (err) => {
       if (err) { 
-        throw err; 
+        callback(new Error(`No item with id: ${id}`));
       } 
       callback(null, { id, text });
     });
@@ -27,7 +27,7 @@ exports.create = (text, callback) => {
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, todoList) => {
     if (err) {
-      throw err;
+      callback(new Error(`No item with id: ${id}`));
     }
     var data = _.map(todoList, (fileName) => {
       fileName = fileName.slice(0, -4);
