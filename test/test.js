@@ -21,7 +21,7 @@ const cleanTestDatastore = () => {
   );
 };
 
-describe('getNextUniqueId', () => {
+xdescribe('getNextUniqueId', () => {
   before(initializeTestFiles);
   beforeEach(initializeTestCounter);
   beforeEach(cleanTestDatastore);
@@ -66,7 +66,7 @@ describe('todos', () => {
   beforeEach(initializeTestCounter);
   beforeEach(cleanTestDatastore);
 
-  describe('create', () => {
+  xdescribe('create', () => {
     it('should create a new file for each todo', (done) => {
       
       todos.create('todo1', (err, data) => {
@@ -134,7 +134,7 @@ describe('todos', () => {
 
   });
 
-  xdescribe('readOne', () => {
+  describe('readOne', () => {
     it('should return an error for non-existant todo', (done) => {
       todos.readOne('notAnId', (err, todo) => {
         expect(err).to.exist;
@@ -154,7 +154,7 @@ describe('todos', () => {
     });
   });
 
-  xdescribe('update', () => {
+  describe('update', () => {
     beforeEach((done) => {
       todos.create('original todo', done);
     });

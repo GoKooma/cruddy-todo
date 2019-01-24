@@ -21,19 +21,25 @@ exports.create = (text, callback) => {
       } 
       callback(null, { id, text });
     });
-    
   });
-  // console.log('----------->', id);
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  fs.readdir(exports.dataDir, (err, todoList) => {
+    if (err) {
+      throw err;
+    }
+    var data = _.map(todoList, (fileName) => {
+      fileName = fileName.slice(0, -4);
+      return { id: fileName, text: fileName };
+    });
+    callback(null, data);
   });
-  callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
+// fs.readdir(exports.dataDir, (err, todoList))
+
   var text = items[id];
   if (!text) {
     callback(new Error(`No item with id: ${id}`));
