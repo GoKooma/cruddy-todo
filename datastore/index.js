@@ -48,18 +48,28 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-
-  counter.readCounter((err, num) => {
-    if (id <= num) {
-      fs.writeFile(`${exports.dataDir}/${id}.txt`, text, 'utf8', (err) => {
-        if (err) {
-          callback(new Error(`No item with id: ${id}`));
+  let verify = false;
+  fs.readdir(exports.dataDir, (err, fileList) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      _.map(fileList, (fileName) => {
+        fileName = fileName.slice(0, -4);
+        if (fileName === id) {
+          verify = true;
+        }
+        if (verify) {
+          fs.writeFile(`${exports.dataDir}/${id}.txt`, text, 'utf8', (err) => {
+            if (err) {
+              callback(new Error(`No item with id: ${id}`));
+            } else {
+              callback(null, { id, text });
+            }
+          });
         } else {
-          callback(null, { id, text });
+          callback(new Error(`No item with id: ${id}`));
         }
       });
-    } else {
-      callback(new Error(`No item with id: ${id}`));
     }
   });
 
