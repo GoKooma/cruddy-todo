@@ -4,6 +4,7 @@ const path = require('path');
 
 const counter = require('../datastore/counter.js');
 const todos = require('../datastore/index.js');
+const Promise = require('bluebird');
 
 const initializeTestFiles = () => {
   counter.counterFile = path.join(__dirname, './counterTest.txt');
@@ -108,6 +109,7 @@ describe('todos', () => {
   });
 
   describe('readAll', () => {
+    let todospro = Promise.promisifyAll(todos);
     it('should return an empty array when there are no todos', (done) => {
       todos.readAll((err, todoList) => {
         expect(err).to.be.null;
@@ -121,17 +123,32 @@ describe('todos', () => {
       const todo1text = 'todo 1';
       const todo2text = 'todo 2';
       const expectedTodoList = [{ id: '00001', text: todo1text }, { id: '00002', text: todo2text }];
-      todos.create(todo1text, (err, todo) => {
-        todos.create(todo2text, (err, todo) => {
-          todos.readAll((err, todoList) => {
-            expect(todoList).to.have.lengthOf(2);
-            expect(todoList).to.deep.include.members(expectedTodoList, 'NOTE: Text field should use the Id initially');
-            done();
-          });
+      todospro.createAsync(todo1text)
+      .then(todo1 => {
+        return;
+      })
+      .then(todo => {
+        return todospro.createAsync(todo2text);
+      })
+      .then(todo => {
+        return todos.readAll((err, todoList) => {
+          expect(todoList).to.have.lengthOf(2);
+          expect(todoList).to.deep.include.members(expectedTodoList, 'NOTE: Text field should use the Id initially');
+          done();
         });
-      });
+      })
+      .catch(err => {
+        console.log(err);
+      })
+        // todos.create(todo2text, (err, todo) => {
+        //   todos.readAll((err, todoList) => {
+        //     expect(todoList).to.have.lengthOf(2);
+        //     expect(todoList).to.deep.include.members(expectedTodoList, 'NOTE: Text field should use the Id initially');
+        //     done();
+        //   });
+        // });
+      // });
     });
-
   });
 
   describe('readOne', () => {

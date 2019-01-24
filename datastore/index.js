@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+var Promise = require('bluebird');
+const fsp = Promise.promisifyAll(fs);
 
 var items = {};
 
@@ -25,17 +27,29 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  fs.readdir(exports.dataDir, (err, todoList) => {
-    if (err) {
-      callback(new Error(`No item with id: ${id}`));
-    }
-    var data = _.map(todoList, (fileName) => {
+  return fsp.readdirAsync(exports.dataDir)
+  .then((fileList) => {
+    var data = _.map(fileList, (fileName) => {
       fileName = fileName.slice(0, -4);
-      return { id: fileName, text: fileName };
-    });
-    callback(null, data);
+      Promise.all([
+        exports.readOne(fileName)
+      ])
+    })
+  })
+  .catch(err => {
+    reject(err);
   });
 };
+    // fs.readdir(exports.dataDir, (err, todoList) => {
+    //   if (err) {
+    //     callback(new Error(`No item with id: ${id}`));
+    //   }
+    //   var data = _.map(todoList, (fileName) => {
+    //     fileName = fileName.slice(0, -4);
+    //     return { id: fileName, text: fileName };
+    //   });
+    //   callback(null, data);
+    // });
 
 exports.readOne = (id, callback) => {
   fs.readFile(`${exports.dataDir}/${id}.txt`, 'utf8', (err, todo) => {
