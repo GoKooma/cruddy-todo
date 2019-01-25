@@ -39,8 +39,17 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = (callback) => {
+  // take in a callback
+  // get the ID from the file
   readCounter((err, num) => {
+    // increment it for next ID
+    // save the new ID to the file
     writeCounter(++num, callback);
+    // alternate way: 
+    // writeCounter(++num, (err, counterString) => {
+    //   // provide the ID to the callback
+    //   callback(null, counterString);
+    // });
   });
 };
 
